@@ -7,8 +7,7 @@ export default function Footer() {
         
         {/* Logo bottom-left */}
         <div className="flex items-center space-x-2">
-          <Image src="/logo.png" alt="Virtra Logo" width={40} height={40} />
-          <span className="font-bold text-lg">Virtra</span>
+          <Image src="/logo.png" alt="Virtra Logo" width={100} height={100} />
         </div>
 
         {/* Footer Nav */}

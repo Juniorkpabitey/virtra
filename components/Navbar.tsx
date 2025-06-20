@@ -11,8 +11,7 @@ export default function Navbar() {
     <nav className="flex items-center justify-between py-4 px-6 relative bg-transparent">
       {/* Logo */}
       <div className="flex items-center space-x-2">
-        <Image src="/logo.png" alt="Virtra Logo" width={40} height={40} />
-        <span className="font-bold text-xl">Virtra</span>
+        <Image src="/logo.png" alt="Virtra Logo" width={100} height={100} />
       </div>
 
       {/* Desktop Menu */}
