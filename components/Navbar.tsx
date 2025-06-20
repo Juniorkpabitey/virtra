@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 export default function Navbar() {
   return (
-    <nav className="flex justify-between items-center py-2 px-6">
+    <nav className="flex justify-between items-center py-3 px-6">
   <div className="flex items-center space-x-2">
     <Image src="/logo.png" alt="Virtra Logo" width={100} height={100} />
   </div>
