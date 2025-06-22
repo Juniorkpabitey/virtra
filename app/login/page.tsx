@@ -1,62 +1,88 @@
+'use client'
+
+import { useState } from 'react'
+import { supabase } from '../../lib/supabaseClient'
+import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import Link from 'next/link'
 import Navbar from '../../components/Navbar'
 import Footer from '../../components/Footer'
 
-export default function SignUp() {
+export default function Login() {
+  const router = useRouter()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    })
+
+    if (error) {
+      setError(error.message)
+    } else {
+      router.push('/dashboard') // Change this route if needed
+    }
+
+    setLoading(false)
+  }
+
   return (
     <div className="min-h-screen bg-[#f9f9f0] flex flex-col">
       <Navbar />
-
       <main className="flex-1 flex flex-col md:flex-row items-center justify-between px-6 md:px-12 py-10">
-        {/* Image section */}
         <div className="w-full md:w-1/2 flex justify-center mb-10 md:mb-0">
-          <Image
-            src="/hero_img.png"
-            alt="Doctor"
-            width={400}
-            height={400}
-            className="rounded-lg"
-          />
+          <Image src="/hero_img.png" alt="Doctor" width={400} height={400} className="rounded-lg" />
         </div>
 
-        {/* Form section */}
         <div className="w-full md:w-1/2 max-w-md space-y-6">
           <h2 className="text-3xl font-semibold">Login to account</h2>
           <p className="text-sm text-gray-600">Enter your details below</p>
 
-          <form className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium">Email or Phone Number</label>
-              <input type="email" className="w-full border-b border-gray-400 focus:outline-none py-1 bg-transparent" />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium">Password</label>
-              <input type="password" className="w-full border-b border-gray-400 focus:outline-none py-1 bg-transparent" />
-            </div>
+          <form className="space-y-4" onSubmit={handleLogin}>
+            <input
+              type="email"
+              placeholder="Email or Phone Number"
+              className="w-full border-b border-gray-400 focus:outline-none py-1 bg-transparent"
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              className="w-full border-b border-gray-400 focus:outline-none py-1 bg-transparent"
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            {error && <p className="text-red-500 text-sm">{error}</p>}
             <button
               type="submit"
               className="w-full bg-gray-300 text-black py-2 rounded-md font-semibold hover:bg-gray-400 transition"
+              disabled={loading}
             >
-              Login
+              {loading ? 'Logging in...' : 'Login'}
             </button>
           </form>
 
           <p className="text-sm text-center">
             New User?{' '}
-            <Link href="/signup" className="font-medium text-black hover:underline">
+            <a href="/signup" className="font-medium text-black hover:underline">
               Create Account
-            </Link>
+            </a>
           </p>
           <p className="text-sm text-center">
-            <Link href="/signup" className="font-medium text-black hover:underline">
+            <a href="/doctor/login" className="font-medium text-black hover:underline">
               Login as Doctor
-            </Link>
+            </a>
           </p>
         </div>
       </main>
-
       <Footer />
     </div>
   )
