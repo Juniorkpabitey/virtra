@@ -1,0 +1,47 @@
+'use client'
+
+import { useState } from 'react'
+import { X, Menu } from 'lucide-react' // You can use any icon set
+
+export default function Sidebar() {
+  const [isOpen, setIsOpen] = useState(false)
+
+  const menus = ['Doctors', 'Appointments', 'Health Bits', 'Virtra AI', 'Profile']
+
+  return (
+    <>
+      {/* Hamburger menu for mobile */}
+      <div className="md:hidden px-4 py-2">
+        <button onClick={() => setIsOpen(true)}>
+          <Menu className="h-6 w-6" />
+        </button>
+      </div>
+
+      {/* Sidebar overlay on mobile */}
+      <div
+        className={`fixed top-0 left-0 h-full w-64 bg-gray-200 shadow-lg z-50 p-4 transition-transform transform ${
+          isOpen ? 'translate-x-0' : '-translate-x-full'
+        } md:static md:translate-x-0 md:w-60 md:h-auto md:block`}
+      >
+        {/* Close button (mobile only) */}
+        <div className="flex justify-end md:hidden">
+          <button onClick={() => setIsOpen(false)}>
+            <X className="h-6 w-6" />
+          </button>
+        </div>
+
+        {/* Menu list */}
+        <div className="mt-6 space-y-3">
+          {menus.map((menu, index) => (
+            <button
+              key={index}
+              className="w-full py-2 px-4 rounded-md bg-white text-black font-medium hover:bg-gray-100 transition"
+            >
+              {menu}
+            </button>
+          ))}
+        </div>
+      </div>
+    </>
+  )
+}
