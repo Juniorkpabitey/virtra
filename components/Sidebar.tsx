@@ -1,12 +1,25 @@
 'use client'
 
 import { useState } from 'react'
-import { X, Menu } from 'lucide-react' // You can use any icon set
+import { useRouter } from 'next/navigation'
+import { X, Menu } from 'lucide-react'
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false)
+  const router = useRouter()
 
-  const menus = ['Doctors', 'Appointments', 'Health Bits', 'Virtra AI', 'Profile']
+  const menus = [
+    { label: 'Doctors', path: '/dashboard' },
+    { label: 'Appointments', path: '/appointments' },
+    { label: 'Health Bits', path: '/health-bits' },
+    { label: 'Virtra AI', path: '/virtra-ai' },
+    { label: 'Profile', path: '/profile' },
+  ]
+
+  const handleNavigate = (path: string) => {
+    router.push(path)
+    setIsOpen(false) // close sidebar on mobile after navigation
+  }
 
   return (
     <>
@@ -35,9 +48,10 @@ export default function Sidebar() {
           {menus.map((menu, index) => (
             <button
               key={index}
+              onClick={() => handleNavigate(menu.path)}
               className="w-full py-2 px-4 rounded-md bg-white text-black font-medium hover:bg-gray-100 transition"
             >
-              {menu}
+              {menu.label}
             </button>
           ))}
         </div>
