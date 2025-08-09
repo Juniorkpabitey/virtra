@@ -10,7 +10,7 @@ export default function Sidebar() {
 
   const menus = [
     { label: 'Doctors', path: '/dashboard' },
-    { label: 'Appointments', path: '/appointment' },
+    { label: 'Appointments', path: '/appointments' },
     { label: 'Health Bits', path: '/health-bits' },
     { label: 'Virtra AI', path: '/virtra-ai' },
     { label: 'Profile', path: '/profile' },
