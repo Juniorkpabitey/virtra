@@ -1,76 +1,69 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import Sidebar from '../../components/Sidebar'
 import DoctorCard from '../../components/DoctorCard'
 import Topbar from '../../components/Topbar'
 import Footer from '../../components/Footer'
+import { supabase } from '../../lib/supabaseClient'
 
-const doctors = [
-  {
-    name: 'Dr. Ama Asantwaa',
-    title: 'Sr. Psychologist',
-    image: '/doctors/dr_img.png',
-    rating: 4.5,
-  },
-  {
-    name: 'Dr. Asare Edo ah',
-    title: 'Sr. Physician',
-    image: '/doctors/dr_img1.png',
-    rating: 4,
-  },
-  {
-    name: 'Dr. Grace Nyarko',
-    title: 'Dermatologist',
-    image: '/doctors/dr_img.png',
-    rating: 4.2,
-  },
-  {
-    name: 'Dr. Michael Mensah',
-    title: 'Cardiologist',
-    image: '/doctors/dr_img1.png',
-    rating: 4.8,
-  },
-  {
-    name: 'Dr. Grace Nyarko',
-    title: 'Dermatologist',
-    image: '/doctors/dr_img.png',
-    rating: 4.2,
-  },
-  {
-    name: 'Dr. Michael Mensah',
-    title: 'Cardiologist',
-    image: '/doctors/dr_img1.png',
-    rating: 4.8,
-  },
- 
- 
-]
+// ✅ Define a Doctor type
+type Doctor = {
+  id: string
+  name: string
+  speciality: string
+  rating: number
+  experience?: string
+  patients?: string
+  image_url: string
+}
 
 export default function Dashboard() {
+  const [doctors, setDoctors] = useState<Doctor[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      const { data, error } = await supabase.from('doctors').select('*')
+
+      if (error) {
+        console.error('Error fetching doctors:', error)
+      } else {
+        setDoctors((data as Doctor[]) || [])
+      }
+
+      setLoading(false)
+    }
+
+    fetchDoctors()
+  }, [])
+
   return (
     <div className="min-h-screen bg-[#f9f9f0] flex flex-col">
       <Topbar />
 
       <div className="flex flex-1 flex-col md:flex-row gap-4 px-2 md:px-6">
-        {/* Sidebar (Responsive) */}
         <Sidebar />
 
-        {/* Doctors Grid */}
         <main className="flex-1 px-4 py-8">
-             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-8">
-            {doctors.slice(0, 6).map((doc, i) => (
-             <div key={i} className="w-full max-w-sm mx-auto">
-              <DoctorCard
-             name={doc.name}
-            title={doc.title}
-            image={doc.image}
-            rating={doc.rating}
-        />
-      </div>
-    ))}
-  </div>
-</main>
-
+          {loading ? (
+            <p className="text-center text-gray-500">Loading doctors...</p>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-8">
+              {doctors.map((doc) => (
+                <div key={doc.id} className="w-full max-w-sm mx-auto">
+                  <DoctorCard
+                    id={doc.id}
+                    name={doc.name}
+                    speciality={doc.speciality}
+                    image={doc.image_url}
+                    rating={doc.rating}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+        </main>
       </div>
 
       <Footer />
