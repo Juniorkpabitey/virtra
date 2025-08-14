@@ -1,15 +1,16 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Sidebar from '@/components/Sidebar'
 import Topbar from '@/components/Topbar'
 import Footer from '@/components/Footer'
 import AIOptionCard from '@/components/AIOptionCard'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight} from 'lucide-react'
 import { supabase } from '@/lib/supabaseClient'
 import ReactMarkdown from 'react-markdown'
+import systemPrompt from '@/prompts/systemPrompt.json'
 
-//API CONFIGURATION
+// API CONFIGURATION
 const VIRTRA_API = process.env.NEXT_PUBLIC_VIRTRA_AI_API_KEY
 
 export default function VirtraAIPage() {
@@ -17,8 +18,20 @@ export default function VirtraAIPage() {
   const [messages, setMessages] = useState<{ prompt: string; response: string }[]>([])
   const [loading, setLoading] = useState(false)
   const [userId, setUserId] = useState<string | null>(null)
+  //const [sidebarOpen, setSidebarOpen] = useState(false)
+  const chatContainerRef = useRef<HTMLDivElement>(null)
 
-  // 1️⃣ Get user and fetch chat history
+  // Auto-scroll to latest message
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTo({
+        top: chatContainerRef.current.scrollHeight,
+        behavior: 'smooth',
+      })
+    }
+  }, [messages])
+
+  // Fetch user & chat history
   useEffect(() => {
     const fetchUserAndChats = async () => {
       const { data: userData } = await supabase.auth.getUser()
@@ -43,7 +56,7 @@ export default function VirtraAIPage() {
     fetchUserAndChats()
   }, [])
 
-  // 2️⃣ Send prompt to API + save to Supabase
+  // Send message to API + save to Supabase
   const handleSend = async () => {
     if (!input.trim() || !userId) return
     setLoading(true)
@@ -58,10 +71,7 @@ export default function VirtraAIPage() {
         body: JSON.stringify({
           model: 'deepseek/deepseek-r1-0528:free',
           messages: [
-            {
-              role: 'system',
-              content: 'You are Virtra, a friendly AI health assistant. Answer clearly and helpfully.',
-            },
+            systemPrompt,
             {
               role: 'user',
               content: input,
@@ -80,7 +90,6 @@ export default function VirtraAIPage() {
       const response = json.choices[0].message.content
       const newEntry = { prompt: input, response }
 
-      // 3️⃣ Add to UI and Supabase
       setMessages((prev) => [...prev, newEntry])
 
       await supabase.from('chats').insert({
@@ -103,37 +112,47 @@ export default function VirtraAIPage() {
 
   return (
     <div className="min-h-screen bg-[#f9f9f0] flex flex-col">
-      <Topbar />
+      {/* Topbar with mobile menu button */}
+       <Topbar/>
 
       <div className="flex flex-1 flex-col md:flex-row gap-4 px-2 md:px-6">
         <Sidebar />
+  
 
-        <main className="flex-1 flex flex-col items-center justify-center space-y-8 px-4 py-6">
-          <div className="flex flex-wrap justify-center gap-5 w-full max-w-5xl">
-            <AIOptionCard label="Your Health Assistant" />
+
+
+        {/* Main content */}
+        <main className="flex-1 flex flex-col items-center justify-center space-y-6 sm:space-y-8 px-2 sm:px-4 py-4 sm:py-6">
+          <div className="flex flex-wrap justify-center gap-2 sm:gap-5 w-full max-w-5xl">
             <AIOptionCard label="Talk to Virtra" />
           </div>
 
           {/* Chat Display */}
-          <div className="w-full max-w-5xl space-y-4 bg-white rounded-xl p-6 shadow-md min-h-[300px]">
+          <div
+            ref={chatContainerRef}
+            className="w-full max-w-5xl space-y-4 bg-white rounded-xl p-4 sm:p-6 shadow-md min-h-[300px] overflow-y-auto"
+            style={{ maxHeight: '60vh' }}
+          >
             {messages.length === 0 ? (
-              <p className="text-center text-gray-500">Ask Virtra all about your health.</p>
+              <p className="text-center text-gray-500 text-sm sm:text-base">
+                Ask Virtra about your health — safely.
+              </p>
             ) : (
               messages.map((msg, index) => (
                 <div key={index} className="space-y-3">
                   {/* User prompt */}
                   <div className="flex justify-end">
-                    <div className="bg-blue-100 px-4 py-2 rounded-lg text-right max-w-[80%]">
-                      <p className="text-gray-800 font-semibold">You:</p>
-                      <p className="text-gray-700">{msg.prompt}</p>
+                    <div className="bg-blue-100 px-3 py-2 sm:px-4 sm:py-2 rounded-lg text-right max-w-[90%] sm:max-w-[80%]">
+                      <p className="text-gray-800 font-semibold text-sm sm:text-base">You:</p>
+                      <p className="text-gray-700 text-sm sm:text-base">{msg.prompt}</p>
                     </div>
                   </div>
 
                   {/* Virtra response */}
                   <div className="flex justify-start">
-                    <div className="bg-gray-100 px-4 py-2 rounded-lg text-left max-w-[80%]">
-                      <p className="text-blue-800 font-semibold">Virtra:</p>
-                      <div className="prose prose-sm text-blue-900 mt-1">
+                    <div className="bg-gray-100 px-3 py-2 sm:px-4 sm:py-2 rounded-lg text-left max-w-[90%] sm:max-w-[80%]">
+                      <p className="text-blue-800 font-semibold text-sm sm:text-base">Virtra:</p>
+                      <div className="prose prose-sm sm:prose-base text-blue-900 mt-1">
                         <ReactMarkdown>{msg.response}</ReactMarkdown>
                       </div>
                     </div>
@@ -144,12 +163,12 @@ export default function VirtraAIPage() {
           </div>
 
           {/* Input box */}
-          <div className="w-full max-w-5xl">
-            <div className="flex items-center bg-gray-200 rounded-full px-4 py-3 shadow-md">
+          <div className="w-full max-w-5xl sticky bottom-0 bg-[#f9f9f0] pb-2 sm:pb-4">
+            <div className="flex items-center bg-gray-200 rounded-full px-3 sm:px-4 py-2 sm:py-3 shadow-md">
               <input
                 type="text"
                 placeholder="Ask Virtra"
-                className="flex-1 bg-transparent outline-none text-lg"
+                className="flex-1 bg-transparent outline-none text-sm sm:text-lg"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSend()}
@@ -157,9 +176,9 @@ export default function VirtraAIPage() {
               <button
                 onClick={handleSend}
                 disabled={loading}
-                className="text-black hover:text-gray-700"
+                className="text-black hover:text-gray-700 p-1 sm:p-2"
               >
-                <ArrowRight className="h-6 w-6" />
+                <ArrowRight className="h-5 w-5 sm:h-6 sm:w-6" />
               </button>
             </div>
           </div>
@@ -170,5 +189,3 @@ export default function VirtraAIPage() {
     </div>
   )
 }
-
-
