@@ -3,42 +3,84 @@
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
-import { useUserStore } from '../stores/userStore'
+import { LogOut } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 export default function Topbar() {
-  const { firstname, setFirstname } = useUserStore()
+  const [firstname, setFirstname] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
+  const router = useRouter()
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      const { data } = await supabase.auth.getSession()
-      const user = data?.session?.user
+  // Fetch firstname from Supabase profiles table
+  const fetchUserProfile = async () => {
+    try {
+      setLoading(true)
+      const { data: authData, error: authError } = await supabase.auth.getUser()
+      if (authError) throw authError
 
-      if (user?.user_metadata?.firstname) {
-        setFirstname(user.user_metadata.firstname)
+      const userId = authData?.user?.id
+      if (!userId) {
+        setFirstname(null)
+        return
       }
 
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('firstName')
+        .eq('id', userId)
+        .single()
+
+      if (profileError) throw profileError
+
+      setFirstname(profileData?.firstName || null)
+    } catch (err) {
+      console.error('Error fetching user profile:', err)
+    } finally {
       setLoading(false)
     }
+  }
 
-    fetchUser()
-  }, [setFirstname])
+  useEffect(() => {
+    fetchUserProfile()
+  }, [])
+
+  // Logout function
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut()
+      router.push('/login')
+    } catch (error) {
+      console.error('Error logging out:', error)
+    }
+  }
 
   return (
-    <div className="flex justify-between items-center px-4 py-4 bg-[#f9f9f0] flex-wrap">
-      {/* Greeting Left */}
-      <div className="text-sm text-gray-700 font-medium mb-2 md:mb-0">
-        {!loading && firstname && <span>👋 Hi, {firstname}</span>}
+    <div className="flex justify-between items-center px-10 py-3 bg-[#f9f9f0] border-b border-gray-200 w-full">
+      {/* Left: Logo + Greeting */}
+      <div className="flex items-center space-x-3">
+        <Image
+          src="/logo.png"
+          alt="Virtra Logo"
+          width={40}
+          height={40}
+          className="w-10 h-10 object-contain"
+        />
+        {!loading && firstname && (
+          <span className="text-sm md:text-base text-gray-700 font-medium truncate max-w-[150px] sm:max-w-[200px]">
+            👋 Welcome, {firstname}
+          </span>
+        )}
       </div>
 
-      {/* Logo and Search Right */}
-      <div className="flex items-center space-x-4">
-        <input
-          type="text"
-          placeholder="Search health professionals"
-          className="px-4 py-2 rounded-full bg-gray-200 text-sm focus:outline-none w-60 sm:w-80"
-        />
-        <Image src="/logo.png" alt="Virtra Logo" width={45} height={45} />
+      {/* Right: Logout */}
+      <div className="flex items-center">
+        <button
+          onClick={handleLogout}
+          className="p-2 rounded-full hover:bg-gray-300 transition-colors"
+          title="Logout"
+        >
+          <LogOut size={22} className="text-gray-700" />
+        </button>
       </div>
     </div>
   )
