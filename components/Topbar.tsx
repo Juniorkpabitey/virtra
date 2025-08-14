@@ -67,7 +67,7 @@ export default function Topbar() {
         />
         {!loading && firstname && (
           <span className="text-sm md:text-base text-gray-700 font-medium truncate max-w-[150px] sm:max-w-[200px]">
-            👋 Welcome, {firstname}
+            Welcome, {firstname}
           </span>
         )}
       </div>
