@@ -13,8 +13,8 @@ export default function Footer() {
         {/* Footer Nav */}
         <div className="flex space-x-6 text-sm">
           <span className="cursor-pointer hover:text-gray-600">Home</span>
-          <span className="cursor-pointer hover:text-gray-600">Login</span>
-          <span className="cursor-pointer hover:text-gray-600">Sign Up</span>
+          <span className="cursor-pointer hover:text-gray-600">About</span>
+          <span className="cursor-pointer hover:text-gray-600">Contact-Us</span>
         </div>
 
         {/* Social Icons */}
