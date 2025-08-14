@@ -8,21 +8,22 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
-    <nav className="flex items-center justify-between py-4 px-6 relative bg-transparent">
+    <nav className="flex items-center justify-between py-8 px-4 relative bg-transparent max-w-7xl mx-auto w-full">
+      
       {/* Logo */}
-      <div className="flex items-center space-x-2">
-        <Image src="/logo.png" alt="Virtra Logo" width={100} height={100} />
+      <div className="flex items-center space-x-3">
+        <Image src="/logo.png" alt="Virtra Logo" width={70} height={70} />
       </div>
 
       {/* Desktop Menu */}
-      <div className="hidden md:flex space-x-4 bg-gray-100 bg-opacity-80 backdrop-blur-sm z-50 rounded-full px-4 py-2">
-        <Link href="/" className="px-4 py-1 rounded-full hover:bg-gray-50">Home</Link>
-        <Link href="/signup" className="px-4 py-1 rounded-full hover:bg-gray-50">Sign Up</Link>
-        <Link href="/login" className="px-4 py-1 rounded-full hover:bg-gray-50">Login</Link>
+      <div className="hidden md:flex space-x-4 bg-gray-100 bg-opacity-80 backdrop-blur-sm rounded-full px-4 py-1">
+        <Link href="/" className="px-3 py-1 rounded-full hover:bg-gray-50">Home</Link>
+        <Link href="/signup" className="px-3 py-1 rounded-full hover:bg-gray-50">Sign Up</Link>
+        <Link href="/login" className="px-3 py-1 rounded-full hover:bg-gray-50">Login</Link>
       </div>
 
-      {/* Hamburger Menu (Mobile) */}
-      <div className="md:hidden z-50">
+      {/* Mobile Hamburger */}
+      <div className="md:hidden">
         <button onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? <X size={28} /> : <Menu size={28} />}
         </button>
@@ -30,7 +31,7 @@ export default function Navbar() {
 
       {/* Mobile Dropdown */}
       {isOpen && (
-        <div className="absolute top-16 right-6 bg-white shadow-lg rounded-lg w-40 flex flex-col items-start p-4 md:hidden z-40">
+        <div className="absolute top-16 right-4 bg-white shadow-lg rounded-lg w-40 flex flex-col items-start p-4 md:hidden z-40">
           <Link href="/" className="py-2 w-full">Home</Link>
           <Link href="/signup" className="py-2 w-full">Sign Up</Link>
           <Link href="/login" className="py-2 w-full">Login</Link>
