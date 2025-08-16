@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from 'next/link'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import { ArrowRight, Shield, Brain, Users, Clock, Star, CheckCircle, Sparkles } from 'lucide-react'
@@ -41,10 +42,10 @@ export default function Home() {
                   </div>
                  
                                   <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                    <button className="group bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-xl font-semibold text-base hover:shadow-2xl hover:shadow-blue-500/25 transform hover:-translate-y-1 transition-all duration-300 flex items-center justify-center border border-blue-500/20">
+                    <Link href="/signup" className="group bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-xl font-semibold text-base hover:shadow-2xl hover:shadow-blue-500/25 transform hover:-translate-y-1 transition-all duration-300 flex items-center justify-center border border-blue-500/20">
                       Get Started Free
                       <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </button>
+                    </Link>
                     <button className="border-2 border-white/20 text-white px-6 py-3 rounded-xl font-semibold text-base hover:border-blue-400 hover:text-blue-400 transition-all duration-300 backdrop-blur-sm">
                       Watch Demo
                     </button>
@@ -204,9 +205,9 @@ export default function Home() {
               Join thousands of users who trust VIRTRA for their health and wellness needs.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-2xl hover:shadow-blue-500/25 transform hover:-translate-y-1 transition-all duration-300 border border-blue-500/20">
+              <Link href="/signup" className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-2xl hover:shadow-blue-500/25 transform hover:-translate-y-1 transition-all duration-300 border border-blue-500/20">
                 Start Your Free Trial
-              </button>
+              </Link>
               <button className="border-2 border-white/20 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:border-blue-400 hover:text-blue-400 transition-all duration-300 backdrop-blur-sm">
                 Schedule a Demo
               </button>
