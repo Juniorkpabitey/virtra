@@ -7,8 +7,6 @@ import Image from 'next/image'
 import Navbar from '../../components/Navbar'
 import Footer from '../../components/Footer'
 import { Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react'
-import AuthDebug from '../../components/AuthDebug'
-import EnvCheck from '../../components/EnvCheck'
 
 function LoginForm() {
   const searchParams = useSearchParams()
@@ -242,8 +240,6 @@ function LoginForm() {
         </main>
         
         <Footer />
-        <AuthDebug />
-        <EnvCheck />
       </div>
     </div>
   )
