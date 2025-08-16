@@ -11,7 +11,6 @@ export default function Sidebar() {
 
   const menus = [
     { label: 'Dashboard', path: '/dashboard', icon: Home },
-    { label: 'Doctors', path: '/doctors', icon: User },
     { label: 'Appointments', path: '/appointments', icon: Calendar },
     { label: 'Health Bits', path: '/health-bits', icon: Heart },
     { label: 'Virtra AI', path: '/virtra-ai', icon: Brain },
